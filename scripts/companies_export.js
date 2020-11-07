@@ -15,7 +15,7 @@ const scraping = async () => {
 
   const keyword = '機械学習';
   const jobCompanies = new JobCompanies();
-  const companies = await jobCompanies.scrape(page, keyword);
+  const companies = await jobCompanies.scrape(page, keyword, 1, 2);
 
   await browser.close();
 
@@ -28,6 +28,7 @@ if (require.main === module) {
 
     try {
       const companies = await scraping();
+      console.log(JSON.stringify(companies, null, 2));
 
       // TODO: Export
 
