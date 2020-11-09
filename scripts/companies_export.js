@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
 
 const { JobCompanies } = require('../lib/company');
@@ -20,6 +22,20 @@ class PromiseSleeper {
     }
   }
 }
+
+const appendCompaniesToCsv = async (companies) => {
+  const destPath = path.join(__dirname, '..', 'data', 'companies.csv');
+
+  for await (const company of companies) {
+    const row = [
+      `"${company.title}"`,
+      `"${company.siteUrl}"`,
+      `"${company.text}"`,
+    ].join(',') + '\n';
+
+    await fs.appendFile(destPath, row);
+  }
+};
 
 
 if (require.main === module) {
@@ -44,9 +60,10 @@ if (require.main === module) {
 
         const jobCompanies = new JobCompanies();
         const companies = await jobCompanies.scrape(page, keyword, pageNum);
-        console.log(JSON.stringify(companies, null, 2));
 
-        // TODO: Export
+        await appendCompaniesToCsv(companies);
+
+        console.log(companies);
       }
 
       await browser.close();
