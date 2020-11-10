@@ -1,0 +1,22 @@
+{
+  "name": "jobfinder",
+  "version": "0.0.1",
+  "description": "My tool to improve job finding",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tayutaedomo/jobfinder.git"
+  },
+  "author": "Tayutaedomo <tayutaedomo@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tayutaedomo/jobfinder/issues"
+  },
+  "homepage": "https://github.com/tayutaedomo/jobfinder#readme",
+  "dependencies": {
+    "puppeteer": "^5.4.1"
+  }
+}
