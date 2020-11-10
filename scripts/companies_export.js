@@ -29,6 +29,7 @@ const appendCompaniesToCsv = async (companies) => {
   for await (const company of companies) {
     const row = [
       `"${company.title}"`,
+      `"${company.status}"`,
       `"${company.siteUrl}"`,
       `"${company.text}"`,
     ].join(',') + '\n';
@@ -55,7 +56,10 @@ if (require.main === module) {
 
       const page = await browser.newPage();
 
-      for await (const pageNum of range(1, 2)) {
+      const start = parseInt(process.argv[3] || 1);
+      const end = parseInt(process.argv[4] || 1);
+
+      for await (const pageNum of range(start, end)) {
         await sleeper.sleep();
 
         const jobCompanies = new JobCompanies();
