@@ -1,6 +1,6 @@
 /*
  * Usage:
- *    $ node scripts/companies_export.js <Interval> <Page start nu> <Page end num>
+ *    $ node scripts/companies_export.js <Interval> <Page start num> <Page end num>
  */
 
 const path = require('path');
