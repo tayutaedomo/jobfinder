@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
 
-const { JobCompanies } = require('../lib/company');
+const { WantedlyCompanyList } = require('../lib/wantedly_company');
 
 
 class PromiseSleeper {
@@ -67,8 +67,8 @@ if (require.main === module) {
       for await (const pageNum of range(start, end)) {
         await sleeper.sleep();
 
-        const jobCompanies = new JobCompanies();
-        const companies = await jobCompanies.scrape(page, keyword, pageNum);
+        const companyList = new WantedlyCompanyList();
+        const companies = await companyList.scrape(page, keyword, pageNum);
 
         await appendCompaniesToCsv(companies);
 
