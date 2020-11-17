@@ -1,6 +1,6 @@
 /*
  * Usage:
- *    $ node scripts/wantedly_companies_export.js <Interval> <Page start num> <Page end num>
+ *    $ node scripts/wantedly_company_export.js <msec interval> <Page start num> <Page end num>
  */
 const path = require('path');
 const fs = require('fs').promises;
