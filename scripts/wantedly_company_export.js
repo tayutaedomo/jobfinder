@@ -18,7 +18,7 @@ if (require.main === module) {
       const sleeper = new PromiseSleeper(process.argv[2]);
       const keyword = '機械学習';
 
-      const writer = new WantedlyCompanyWriter('companies.csv');
+      const writer = new WantedlyCompanyWriter('wantedly_companies.csv');
 
       const browser = await puppeteer.launch({
         args: [
