@@ -6,41 +6,8 @@ const path = require('path');
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer');
 
-const { WantedlyCompanyList } = require('../lib/wantedly_company');
-
-
-class PromiseSleeper {
-  constructor(msec) {
-    this.count = 0;
-    this.msec = msec || 15 * 1000;
-    this.setTimeout = ms => new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async sleep() {
-    if (this.count == 0) {
-      this.count++;
-
-    } else {
-      await this.setTimeout(this.msec);
-      this.count++;
-    }
-  }
-}
-
-const appendCompaniesToCsv = async (companies) => {
-  const destPath = path.join(__dirname, '..', 'data', 'companies.csv');
-
-  for await (const company of companies) {
-    const row = [
-      `"${company.title}"`,
-      `"${company.status}"`,
-      `"${company.siteUrl}"`,
-      `"${company.text}"`,
-    ].join(',') + '\n';
-
-    await fs.appendFile(destPath, row);
-  }
-};
+const { WantedlyCompanyList, WantedlyCompanyWriter } = require('../lib/wantedly_company');
+const { PromiseSleeper } = require('../lib/sleeper');
 
 
 if (require.main === module) {
@@ -51,13 +18,14 @@ if (require.main === module) {
       const sleeper = new PromiseSleeper(process.argv[2]);
       const keyword = '機械学習';
 
+      const writer = new WantedlyCompanyWriter('companies.csv');
+
       const browser = await puppeteer.launch({
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox'
         ]
       });
-
       const page = await browser.newPage();
 
       const start = parseInt(process.argv[3] || 1);
@@ -69,7 +37,7 @@ if (require.main === module) {
         const companyList = new WantedlyCompanyList();
         const companies = await companyList.scrape(page, keyword, pageNum);
 
-        await appendCompaniesToCsv(companies);
+        await writer.append(companies);
 
         console.log(companies);
       }
