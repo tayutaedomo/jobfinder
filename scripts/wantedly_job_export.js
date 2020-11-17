@@ -1,10 +1,10 @@
 /*
  * Usage:
- *    $ node scripts/wantedly_job_export.js <Interval> <First page num> <Last page num>
+ *    $ node scripts/wantedly_job_export.js <msec interval> <First page num> <Last page num>
  */
 const puppeteer = require('puppeteer');
 
-const { WantedlyJobList } = require('../lib/wantedly_job');
+const { WantedlyJobList, WantedlyJobWriter } = require('../lib/wantedly_job');
 const { PromiseSleeper } = require('../lib/sleeper');
 
 
@@ -15,6 +15,7 @@ if (require.main === module) {
       const range = (start, end) => [...Array(end + 1).keys()].slice(start);
       const sleeper = new PromiseSleeper(process.argv[2]);
       const keyword = '機械学習';
+      const writer = new WantedlyJobWriter('wantedly_jobs.csv');
 
       const browser = await puppeteer.launch({
         args: [
@@ -32,6 +33,8 @@ if (require.main === module) {
 
         const jobList = new WantedlyJobList();
         await jobList.scrape(page, keyword, pageNum);
+
+        await writer.append(jobList.jobs);
 
         console.log(jobList.jobs);
       }
