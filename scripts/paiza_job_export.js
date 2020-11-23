@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-const { PaizaJobList } = require('../lib/paiza_job');
+const { PaizaJobList, PaizaJobWriter } = require('../lib/paiza_job');
 const { PromiseSleeper } = require('../lib/sleeper');
 
 
@@ -10,6 +10,7 @@ if (require.main === module) {
     try {
       const range = (start, end) => [...Array(end + 1).keys()].slice(start);
       const sleeper = new PromiseSleeper(process.argv[2]);
+      const writer = new PaizaJobWriter('paiza_jobs.csv');
 
       const browser = await puppeteer.launch({
         args: [
@@ -27,6 +28,8 @@ if (require.main === module) {
 
         const jobList = new PaizaJobList();
         await jobList.scrape(page, pageNum);
+
+        await writer.append(jobList.jobs);
 
         console.log(jobList.jobs);
       }
