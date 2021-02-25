@@ -1,6 +1,7 @@
 #!/bin/sh
 
 KEYWORD=$1
+KEYWORD=`node -e "console.log('${KEYWORD}'.replace('株式会社','').trim())"`
 echo "Keyword: ${KEYWORD}"
 
 WANTEDLY_URL="https://www.wantedly.com/search?q=${KEYWORD}"
