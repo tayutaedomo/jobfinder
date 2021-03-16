@@ -9,6 +9,7 @@ if (require.main === module) {
 
     const greenLogin = new GreenLogin(process.argv[2], process.argv[3]);
     const greenSearch = new GreenSearch(process.argv[4]);
+    const pageCount = process.argv[5] || 1;
 
     const browser = await puppeteer.launch({
       args: [
@@ -26,7 +27,7 @@ if (require.main === module) {
       await greenLogin.login(page);
       console.log('Logged in.');
 
-      await greenSearch.scraping(page);
+      await greenSearch.scraping(page, pageCount);
 
       await browser.close();
 
