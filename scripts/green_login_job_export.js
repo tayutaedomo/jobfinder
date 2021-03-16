@@ -1,15 +1,16 @@
 const puppeteer = require('puppeteer');
 
-const { GreenLogin, GreenSearch } = require('../lib/green_login');
+const { GreenLogin, GreenSearch, GreenJobWriter } = require('../lib/green_login');
 
 
 if (require.main === module) {
 
   (async () => {
 
-    const greenLogin = new GreenLogin(process.argv[2], process.argv[3]);
-    const greenSearch = new GreenSearch(process.argv[4]);
+    const login = new GreenLogin(process.argv[2], process.argv[3]);
+    const search = new GreenSearch(process.argv[4]);
     const pageCount = process.argv[5] || 1;
+    const writer = new GreenJobWriter('green_login_jobs.csv');
 
     const browser = await puppeteer.launch({
       args: [
@@ -24,10 +25,11 @@ if (require.main === module) {
     try {
       const page = await browser.newPage();
 
-      await greenLogin.login(page);
+      await login.login(page);
       console.log('Logged in.');
 
-      await greenSearch.scraping(page, pageCount);
+      await search.scraping(page, pageCount);
+      await writer.append(search.jobs);
 
       await browser.close();
 
