@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-const { ForkwellJobList } = require('../lib/forkwell_job');
+const { ForkwellJobList, ForkwellJobWriter } = require('../lib/forkwell_job');
 const { PromiseSleeper } = require('../lib/sleeper');
 
 
@@ -11,6 +11,7 @@ if (require.main === module) {
       const range = (start, end) => [...Array(end + 1).keys()].slice(start);
       const sleeper = new PromiseSleeper(process.argv[2]);
       const url = 'https://jobs.forkwell.com/jobs/search?q[employment_types][]=&q[freeword]=機械学習+AI&q[job_tags][]=&q[professions][]=&q[selections][]=&q[sort]=job_popularity_popularity+desc&q[yearly_base_salaly_min_value]=&wovn_token=966g8t';
+      const writer = new ForkwellJobWriter('forkwell_jobs.csv');
 
       const browser = await puppeteer.launch({
         args: [
@@ -28,12 +29,16 @@ if (require.main === module) {
       const end = parseInt(process.argv[4] || 1);
 
       for await (const pageNum of range(start, end)) {
-        await sleeper.sleep();
-
         const jobList = new ForkwellJobList(url);
         await jobList.scrape(page, pageNum);
 
+        await writer.append(jobList.jobs);
+
         console.log(jobList.jobs);
+
+        if (pageNum < end) {
+          await sleeper.sleep();
+        }
       }
 
       await browser.close();
